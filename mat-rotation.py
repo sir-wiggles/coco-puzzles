@@ -1,12 +1,14 @@
-
+from collections import deque
 
 mat = [['a', 'b'], ['c', 'd']]
+amount = 6
 
 max_r = len(mat) - 1
 max_c = len(mat[0]) - 1
 
-
 for r in range(len(mat) // 2):
+
+    ring_elements = (len(mat) * 2) + (len(mat[0])) - 4
 
     ring = []
     c = r
@@ -50,4 +52,7 @@ for r in range(len(mat) // 2):
                 r += 1
                 side = 0
 
+    comp = deque(ring)
+
+    amount % ring_elements
 
