@@ -1,58 +1,101 @@
+#!/bin/python
+
+import sys
+from copy import deepcopy
 from collections import deque
 
-mat = [['a', 'b'], ['c', 'd']]
-amount = 6
 
-max_r = len(mat) - 1
-max_c = len(mat[0]) - 1
+def matrixRotation(mat, amount=1):
 
-for r in range(len(mat) // 2):
+    limit = min(len(mat), len(mat[0])) // 2
+    max_r = len(mat) - 1
+    max_c = len(mat[0]) - 1
 
-    ring_elements = (len(mat) * 2) + (len(mat[0])) - 4
+    for i, r in enumerate(range(limit)):
 
-    ring = []
-    c = r
-    side = 0
-    while True:
+        ring, values = deque([]), []
+        c, s = r, 0
+        while True:
+            if ring and (r, c) == ring[0]:
+                break
+            ring.append((r, c))
+            values.append(mat[r][c])
+            if s == 0:
+                if r < max_r - i:
+                    r += 1
+                else:
+                    r = max_r - i
+                    c += 1
+                    s = 1
+            elif s == 1:
+                if c < max_c - i:
+                    c += 1
+                else:
+                    c = max_c - i
+                    r -= 1
+                    s = 2
+            elif s == 2:
+                if r > i:
+                    r -= 1
+                else:
+                    r = i
+                    c -= 1
+                    s = 3
+            elif s == 3:
+                if c > i:
+                    c -= 1
+                else:
+                    c = i
+                    r += 1
+                    s = 0
 
-        if (r, c) == ring[0]:
-            break
+        step = amount % len(values)
+        if step == 0:
+            continue
 
-        ring.append((r, c))
+        ring.rotate(-step)
+        for i, (r, c) in enumerate(ring):
+            mat[r][c] = values[i]
 
-        if side == 0:
-            if r < max_r:
-                r += 1
-            else:
-                r = max_r
-                c += 1
-                side = 1
+    for row in mat:
+        print(" ".join(map(str, row)))
 
-        elif side == 1:
-            if c < max_c:
-                c += 1
-            else:
-                c = max_c
-                r -= 1
-                side = 2
+    return mat
 
-        elif side == 2:
-            if r > 0:
-                r -= 1
-            else:
-                r = 0
-                c -= 1
-                side = 3
 
-        elif side == 3:
-            if c > 0:
-                c -= 1
-            else:
-                c = 0
-                r += 1
-                side = 0
+if __name__ == "__main__":
 
-    comp = deque(ring)
 
-    amount % ring_elements
+    def display(mat):
+        for _ in mat:
+            print(" ".join(map(str, _)))
+        print("=================")
+
+    mat = [
+        [1, 8, 7],
+        [2, 9, 6],
+        [3, 4, 5],
+    ]
+
+    mat = [
+        [1, 6, 5],
+        [2, 3, 4],
+    ]
+
+    mat = [
+        [1, 6],
+        [2, 5],
+        [3, 4],
+    ]
+
+
+    for x in range(10):
+        print(x)
+        mat = [
+            [1, 2, 3, 4],
+            [1, 5, 8, 4],
+            [1, 6, 7, 4],
+            [1, 2, 3, 4],
+        ]
+        display(matrixRotation(mat, x))
 
